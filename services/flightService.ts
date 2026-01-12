@@ -19,6 +19,9 @@ export const checkFlightStatus = async (flightNumber: string, date: string): Pro
     4. Status (Landed, Delayed, Cancelled)
     5. Delay duration in minutes (if any, otherwise 0)
     6. Approximate flight distance in km.
+    7. Scheduled Departure Time (local time, e.g. 14:30)
+    8. Scheduled Arrival Time (local time, e.g. 18:45)
+    9. Specific reason for delay/cancellation if mentioned (e.g. Technical issue, Weather, Crew, Strike).
     
     If the flight was cancelled, assume the delay is effectively > 180 minutes.
   `;
@@ -55,7 +58,10 @@ export const checkFlightStatus = async (flightNumber: string, date: string): Pro
                     arrival: { type: Type.STRING },
                     status: { type: Type.STRING, enum: ["ON_TIME", "DELAYED", "CANCELLED"] },
                     delayDurationMinutes: { type: Type.INTEGER },
-                    distanceKm: { type: Type.INTEGER }
+                    distanceKm: { type: Type.INTEGER },
+                    scheduledDepartureTime: { type: Type.STRING, description: "Format HH:MM" },
+                    scheduledArrivalTime: { type: Type.STRING, description: "Format HH:MM" },
+                    delayReason: { type: Type.STRING, description: "Reason or 'Unknown'" }
                 },
                 required: ["airline", "departure", "arrival", "status", "delayDurationMinutes", "distanceKm"]
             }
@@ -73,7 +79,10 @@ export const checkFlightStatus = async (flightNumber: string, date: string): Pro
           arrival: data.arrival || "Unknown",
           status: (data.status as FlightStatus) || FlightStatus.ON_TIME,
           delayDurationMinutes: data.delayDurationMinutes || 0,
-          distanceKm: data.distanceKm || 0
+          distanceKm: data.distanceKm || 0,
+          scheduledDepartureTime: data.scheduledDepartureTime,
+          scheduledArrivalTime: data.scheduledArrivalTime,
+          delayReason: data.delayReason
       };
 
   } catch (error) {
@@ -87,7 +96,8 @@ export const checkFlightStatus = async (flightNumber: string, date: string): Pro
         arrival: "Unknown",
         status: FlightStatus.ON_TIME,
         delayDurationMinutes: 0,
-        distanceKm: 0
+        distanceKm: 0,
+        delayReason: "Unknown"
       };
   }
 };

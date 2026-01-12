@@ -11,6 +11,14 @@ export const generateClaimLetter = async (
   currency: string
 ): Promise<string> => {
   
+  const timeDetails = flight.scheduledDepartureTime && flight.scheduledArrivalTime 
+      ? `- Scheduled Times: ${flight.scheduledDepartureTime} (Departure) - ${flight.scheduledArrivalTime} (Arrival)` 
+      : '';
+  
+  const reasonDetail = flight.delayReason && flight.delayReason !== 'Unknown' 
+      ? `- Specific Reason for Disruption: ${flight.delayReason}` 
+      : '';
+
   const prompt = `
     Act as a specialized aviation lawyer. Write a formal, legally robust letter of claim for flight compensation 
     pursuant to Regulation ${regulation}.
@@ -22,7 +30,9 @@ export const generateClaimLetter = async (
     - Flight: ${flight.flightNumber}
     - Date: ${flight.date}
     - Route: ${flight.departure} to ${flight.arrival}
+    ${timeDetails}
     - Incident: ${flight.status} (${flight.delayDurationMinutes} min delay)
+    ${reasonDetail}
     - Compensation Demanded: ${currency}${amount} per passenger.
 
     Instructions:
@@ -30,8 +40,9 @@ export const generateClaimLetter = async (
     2. Search for the specific Dispute Resolution Body (ADR) that handles ${flight.airline}.
     3. Include these specific contact details in the letter header or footer.
     4. Cite relevant case law (e.g., Sturgeon v Condor) if applicable.
-    5. Use a firm but professional tone.
-    6. Demand payment within 14 days.
+    5. If a delay reason is provided above, argue why it does not constitute an "extraordinary circumstance" if applicable, or state that the airline has failed to prove it is extraordinary.
+    6. Use a firm but professional tone.
+    7. Demand payment within 14 days.
     
     Format the output as a clean legal letter.
   `;

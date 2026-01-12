@@ -14,6 +14,52 @@ import { AboutPage, PrivacyPage, FAQPage } from './components/StaticPages';
 
 // --- Components defined internally ---
 
+// 0. Reusable Flight Summary Card
+const FlightSummaryCard = ({ flight }: { flight: FlightDetails }) => (
+    <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm w-full text-left">
+        <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-4">Flight Summary</h3>
+        <div className="flex justify-between items-center mb-4">
+            <div>
+                <div className="text-2xl font-bold text-slate-900">{flight.departure.split(' ')[0]}</div>
+                {flight.scheduledDepartureTime && (
+                    <div className="text-lg font-mono text-slate-700">{flight.scheduledDepartureTime}</div>
+                )}
+                <div className="text-sm text-slate-500">Departure</div>
+            </div>
+            <div className="flex-1 border-t-2 border-slate-200 border-dashed mx-4 relative top-[-8px]"></div>
+            <div className="text-right">
+                <div className="text-2xl font-bold text-slate-900">{flight.arrival.split(' ')[0]}</div>
+                {flight.scheduledArrivalTime && (
+                    <div className="text-lg font-mono text-slate-700">{flight.scheduledArrivalTime}</div>
+                )}
+                <div className="text-sm text-slate-500">Arrival</div>
+            </div>
+        </div>
+        <div className="flex flex-col gap-2 text-sm text-slate-600 bg-slate-50 p-3 rounded-lg">
+            <div className="flex justify-between">
+                <span className="font-semibold text-slate-700">{flight.airline}</span>
+                <span>{flight.date}</span>
+            </div>
+            <div className="flex justify-between text-xs text-slate-500">
+                <span>Flight: {flight.flightNumber}</span>
+                <span>Distance: {flight.distanceKm}km</span>
+            </div>
+            <div className="flex justify-between text-xs text-slate-500 border-t border-slate-200 pt-2 mt-1">
+                <span>Status:</span>
+                <span className={`font-bold ${flight.status === FlightStatus.CANCELLED ? 'text-red-600' : flight.status === FlightStatus.DELAYED ? 'text-amber-600' : 'text-green-600'}`}>
+                    {flight.status.replace('_', ' ')}
+                    {flight.delayDurationMinutes > 0 && ` (${flight.delayDurationMinutes} min)`}
+                </span>
+            </div>
+             {flight.delayReason && flight.delayReason !== 'Unknown' && (
+                 <div className="text-xs text-slate-500 mt-1 italic border-t border-slate-200 pt-1">
+                    Reason: {flight.delayReason}
+                 </div>
+            )}
+        </div>
+    </div>
+);
+
 // 1. Header Component
 const Header = ({ onGoHome }: { onGoHome: () => void }) => (
   <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200">
@@ -52,7 +98,7 @@ const SearchStep = ({ onSearch }: { onSearch: (f: string, d: string) => void }) 
           <span className="text-aviation-600">Get Paid, Don't Get Played.</span>
         </h1>
         <p className="text-lg text-slate-600">
-            Generate a professional legal compensation letter in seconds for just <span className="font-bold text-slate-900">$2.99</span>. 
+            Generate a professional legal compensation letter in seconds for just <span className="font-bold text-slate-900">€2.99</span>. 
             Others take 35% of your payout. We take zero.
         </p>
       </div>
@@ -120,6 +166,16 @@ const EligibilityStep = ({
 }) => {
   return (
     <div className="max-w-4xl mx-auto py-12 px-4">
+      <button 
+        onClick={onReset} 
+        className="mb-6 flex items-center text-sm text-slate-500 hover:text-aviation-600 transition-colors font-medium group"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1 group-hover:-translate-x-1 transition-transform">
+            <path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/>
+        </svg>
+        Back to Search
+      </button>
+
       {claim.eligible ? (
         <div className="grid md:grid-cols-2 gap-8 items-start">
           {/* Left Column: Flight Info & Status */}
@@ -139,30 +195,7 @@ const EligibilityStep = ({
                </div>
             </div>
 
-            <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
-                <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-4">Flight Summary</h3>
-                <div className="flex justify-between items-center mb-4">
-                    <div>
-                        <div className="text-2xl font-bold text-slate-900">{flight.departure.split(' ')[0]}</div>
-                        <div className="text-sm text-slate-500">Departure</div>
-                    </div>
-                    <div className="flex-1 border-t-2 border-slate-200 border-dashed mx-4 relative top-[-8px]"></div>
-                    <div className="text-right">
-                        <div className="text-2xl font-bold text-slate-900">{flight.arrival.split(' ')[0]}</div>
-                        <div className="text-sm text-slate-500">Arrival</div>
-                    </div>
-                </div>
-                <div className="flex flex-col gap-2 text-sm text-slate-600 bg-slate-50 p-3 rounded-lg">
-                    <div className="flex justify-between">
-                        <span className="font-semibold text-slate-700">{flight.airline}</span>
-                        <span>{flight.date}</span>
-                    </div>
-                    <div className="flex justify-between text-xs text-slate-500">
-                        <span>Flight: {flight.flightNumber}</span>
-                        <span>Distance: {flight.distanceKm}km</span>
-                    </div>
-                </div>
-            </div>
+            <FlightSummaryCard flight={flight} />
           </div>
 
           {/* Right Column: Value Prop & Action */}
@@ -184,29 +217,33 @@ const EligibilityStep = ({
                     <ChevronRightIcon className="w-5 h-5" />
                 </button>
                 <div className="text-center mt-3 text-xs text-slate-400">
-                    Pay only $2.99 once. Keep 100% of the rest.
+                    Pay only €2.99 once. Keep 100% of the rest.
                 </div>
              </div>
           </div>
         </div>
       ) : (
-        <div className="max-w-xl mx-auto bg-yellow-50 border border-yellow-200 rounded-xl p-8 text-center">
-            <div className="mx-auto w-12 h-12 bg-yellow-100 text-yellow-600 rounded-full flex items-center justify-center mb-4">
-                <AlertCircleIcon className="w-6 h-6" />
+        <div className="max-w-xl mx-auto flex flex-col items-center">
+            <div className="w-full bg-yellow-50 border border-yellow-200 rounded-xl p-8 text-center mb-6">
+                <div className="mx-auto w-12 h-12 bg-yellow-100 text-yellow-600 rounded-full flex items-center justify-center mb-4">
+                    <AlertCircleIcon className="w-6 h-6" />
+                </div>
+                <h2 className="text-xl font-bold text-yellow-900 mb-2">Not Eligible for Compensation</h2>
+                <div className="text-yellow-800 space-y-2">
+                    <p>
+                        Based on the data for {flight.airline} flight {flight.flightNumber}, the delay was less than 3 hours or due to extraordinary circumstances. 
+                        Claims under EU261 require a delay of 3+ hours upon arrival.
+                    </p>
+                </div>
             </div>
-            <h2 className="text-xl font-bold text-yellow-900 mb-2">Not Eligible for Compensation</h2>
-            <div className="text-yellow-800 space-y-2">
-                <p>
-                    <strong>Airline Checked:</strong> {flight.airline}
-                </p>
-                <p>
-                    Based on the live flight data, the delay was less than 3 hours or due to extraordinary circumstances. 
-                    Claims under EU261 require a delay of 3+ hours upon arrival.
-                </p>
+
+            <div className="w-full mb-6">
+                 <FlightSummaryCard flight={flight} />
             </div>
+
             <button 
                 onClick={onReset}
-                className="mt-6 px-4 py-2 bg-white border border-yellow-300 text-yellow-800 rounded-lg hover:bg-yellow-100 font-medium cursor-pointer transition-colors"
+                className="px-6 py-3 bg-white border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 font-medium cursor-pointer transition-colors shadow-sm"
             >
                 Check Another Flight
             </button>
@@ -247,11 +284,11 @@ const PaymentStep = ({ onPay }: { onPay: (details: PassengerDetails) => void }) 
                     <div className="mb-6">
                         <div className="flex justify-between text-sm mb-2">
                             <span className="text-slate-600">Premium Claim Letter</span>
-                            <span className="font-bold text-slate-900">$2.99</span>
+                            <span className="font-bold text-slate-900">€2.99</span>
                         </div>
                         <div className="flex justify-between text-sm border-t border-slate-100 pt-2">
                             <span className="font-bold text-slate-900">Total</span>
-                            <span className="font-bold text-aviation-600 text-lg">$2.99</span>
+                            <span className="font-bold text-aviation-600 text-lg">€2.99</span>
                         </div>
                     </div>
 
@@ -295,7 +332,7 @@ const PaymentStep = ({ onPay }: { onPay: (details: PassengerDetails) => void }) 
                             disabled={isProcessing}
                             className="w-full mt-4 py-3 bg-aviation-600 hover:bg-aviation-700 text-white font-bold rounded-lg shadow transition-colors flex justify-center items-center gap-2"
                         >
-                            {isProcessing ? "Processing..." : "Pay $2.99 & Generate"}
+                            {isProcessing ? "Processing..." : "Pay €2.99 & Generate"}
                         </button>
                     </form>
                 </div>

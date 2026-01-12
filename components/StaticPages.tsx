@@ -16,7 +16,7 @@ export const AboutPage = () => (
             <h2 className="text-xl font-semibold text-slate-800 mt-8 mb-4">Our Promise</h2>
             <ul className="list-disc pl-5 space-y-2 bg-slate-50 p-6 rounded-xl border border-slate-100">
                 <li><strong className="text-slate-900">Zero Commissions:</strong> You keep 100% of your payout.</li>
-                <li><strong className="text-slate-900">Flat Fee:</strong> Just $2.99, regardless of claim size.</li>
+                <li><strong className="text-slate-900">Flat Fee:</strong> Just €2.99, regardless of claim size.</li>
                 <li><strong className="text-slate-900">Instant:</strong> No waiting for caseworkers.</li>
             </ul>
         </div>
@@ -69,7 +69,7 @@ export const FAQPage = () => (
 
             <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
                 <h3 className="font-bold text-slate-900 text-lg mb-2">Do you take a commission?</h3>
-                <p className="text-slate-600">Never. Competitors take 35-50% of your money. We charge a flat $2.99 fee for the generation service. If the airline pays you €600, you keep exactly €600.</p>
+                <p className="text-slate-600">Never. Competitors take 35-50% of your money. We charge a flat €2.99 fee for the generation service. If the airline pays you €600, you keep exactly €600.</p>
             </div>
 
             <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">

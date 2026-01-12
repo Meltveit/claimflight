@@ -13,6 +13,10 @@ export enum FlightStatus {
     status: FlightStatus;
     delayDurationMinutes: number;
     distanceKm: number;
+    // New enhanced fields
+    scheduledDepartureTime?: string;
+    scheduledArrivalTime?: string;
+    delayReason?: string;
   }
   
   export interface PassengerDetails {

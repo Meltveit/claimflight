@@ -9,9 +9,7 @@ const ComparisonChart: React.FC<ComparisonChartProps> = ({ claimAmount }) => {
   const competitorFee = Math.round(claimAmount * 0.35); // 35% fee
   const userKeepsCompetitor = claimAmount - competitorFee;
   
-  const claimJetFee = 3; // Approx 2.99 USD converted for simplicity or kept distinct
-  // Assuming claimAmount is in Euros, roughly converting fee for visual comparison isn't strictly necessary if labels are clear, 
-  // but let's just compare "Money in Your Pocket".
+  const claimJetFee = 3; // Approx 2.99 USD/EUR converted for simplicity
 
   const data = [
     {
@@ -58,7 +56,7 @@ const ComparisonChart: React.FC<ComparisonChartProps> = ({ claimAmount }) => {
         </BarChart>
       </ResponsiveContainer>
       <div className="mt-2 text-center text-xs text-slate-500">
-        *Competitors typically take 35% + VAT. You pay us flat $2.99.
+        *Competitors typically take 35% + VAT. You pay us flat €2.99.
       </div>
     </div>
   );
